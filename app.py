@@ -1,14 +1,17 @@
 from typing import List
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
 from db_connection import conn
 from models.user_model import users
-from schemas.user import User, UserList
+from schemas.user import User
 
 app = FastAPI()
 
+template = Jinja2Templates(directory = "templates")
+
 @app.get("/")
-async def root():
-    return conn.execute(users.select()).fetchall()
+async def root(request: Request):
+    return template.TemplateResponse('index.html',  {"request": request},)
 
 @app.post("/add")
 async def addUser(user: User):
